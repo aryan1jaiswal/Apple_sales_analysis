@@ -1,4 +1,6 @@
-# Apple_sales_analysis
+![Apple_logo](https://github.com/aryan1jaiswal/Apple_sales_analysis/blob/main/Apple.png)
+
+# Apple Sales Analysis (Advanced)
 
 ## Overview
 This portfolio project contains advanced SQL analysis on **1 million+ Apple sales records**
