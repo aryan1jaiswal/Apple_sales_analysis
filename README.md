@@ -269,10 +269,35 @@ from products a join sales b
 ON a.product_id = b.product_id
 ) abc
 group by sale_time
-order by sales_cnt desc
+order by sales_cnt desc;
 ```
 
-### 11. For each store, compute the standard deviation of monthly total sales quantity over the last 2 years. Include only stores that have sales in at least 18 months.
+### 11. Find the correlation between product price and warranty claims for products sold in the last five years, segmented by price range.
+
+``` sql
+with claim_cnts  as (
+select b.product_id, price,
+(CASE WHEN price between '200' AND '500' THEN 'Low_price'
+WHEN price between '501' AND '1000' THEN 'Medium price'
+WHEN price between '1001' AND '2000' THEN 'High price'
+ELSE'other'
+END) as price_category,
+count(*)::numeric as num_claims
+from warranty a JOIN sales b 
+on a.sale_id =  b.sale_id
+left JOIN products c
+ON b.product_id = c.product_id
+where sale_date >= current_date - Interval '5 years'
+Group by b.product_id, price
+order by price
+)
+
+select price_category, CORR(price,num_claims)
+from claim_cnts 
+Group by price_category;
+``` 
+
+### 12. For each store, compute the standard deviation of monthly total sales quantity over the last 2 years. Include only stores that have sales in at least 18 months.
 
 ``` sql
 
@@ -302,7 +327,7 @@ from mean
 
 ```
 
-### 12. For each month, find the product with the highest number of units sold. Return month, product name, product category and total units sold. Break ties alphabetically.
+### 13. For each month, find the product with the highest number of units sold. Return month, product name, product category and total units sold. Break ties alphabetically.
 
 ``` sql
 with cte as (
@@ -328,7 +353,7 @@ order by sales_month;
 ```
 
 
-### 13. For each store, find the number of times total monthly sales more than doubled compared to the previous month. 
+### 14. For each store, find the number of times total monthly sales more than doubled compared to the previous month. 
 
 ``` sql
 with sales_counts as (
@@ -355,7 +380,7 @@ from previous_sales
 where sales_cnt/prev_sales >= 2;
 ```
 
-### 14. Find all products that have had at least 12 consecutive months of sales. Return product name and the starting month of this 12-month streak.
+### 15. Find all products that have had at least 12 consecutive months of sales. Return product name and the starting month of this 12-month streak.
 
 ``` sql
 with product_sales as (
